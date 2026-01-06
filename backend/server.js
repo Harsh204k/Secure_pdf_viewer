@@ -9,7 +9,11 @@ const app = express();
 
 // Middleware
 app.use(cors());
-app.use(helmet());
+app.use(
+    helmet({
+        crossOriginResourcePolicy: false,
+    })
+);
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
@@ -34,7 +38,7 @@ app.use((err, req, res, next) => {
     console.error(err.stack);
     const status = err.statusCode || 500;
     const message = err.message || 'Internal Server Error';
-    
+
     // Structured JSON error response
     res.status(status).json({
         message,
