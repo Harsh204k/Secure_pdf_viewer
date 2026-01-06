@@ -1,0 +1,30 @@
+<<<<<<< HEAD
+# Dependencies
+node_modules/
+=======
+# IDEs
+.vscode/
+.idea/
+>>>>>>> 346f2acb384a3d409b54d75d527c9188a3eca5c9
+
+# System
+.DS_Store
+Thumbs.db
+
+<<<<<<< HEAD
+# Logs
+logs
+*.log
+npm-debug.log*
+
+# Editor directories
+.vscode/
+.idea/
+
+# Environment
+.env
+=======
+# Project
+artifacts/
+*.log
+>>>>>>> 346f2acb384a3d409b54d75d527c9188a3eca5c9
