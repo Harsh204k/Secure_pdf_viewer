@@ -1,5 +1,6 @@
 import { createContext, useContext, useEffect, useState } from 'react';
 import { auth } from '../firebase';
+import API_BASE_URL from '../config/api';
 import { onAuthStateChanged } from 'firebase/auth';
 import axios from 'axios';
 import React from 'react';
@@ -18,7 +19,7 @@ export const AuthProvider = ({ children }) => {
                 // Sync user with backend
                 try {
                     const token = await user.getIdToken();
-                    await axios.post('http://localhost:5000/api/auth/sync', {}, {
+                    await axios.post(`${API_BASE_URL}/api/auth/sync`, {}, {
                         headers: { Authorization: `Bearer ${token}` }
                     });
                 } catch (error) {

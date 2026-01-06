@@ -4,6 +4,7 @@ import { Document, Page, pdfjs } from 'react-pdf';
 import { useAuth } from '../context/AuthContext';
 import axios from 'axios';
 import React from 'react';
+import API_BASE_URL from '../config/api';
 
 // Components
 import Watermark from '../components/Watermark';
@@ -13,11 +14,11 @@ import SecurityOverlay from '../components/SecurityOverlay';
 import { useSecurityLayers } from '../hooks/useSecurityLayers';
 
 // Set worker source locally to avoid CDN/CORS issues
-import pdfWorker from 'pdfjs-dist/build/pdf.worker.min.mjs?url';
-pdfjs.GlobalWorkerOptions.workerSrc = pdfWorker;
+// Configure worker
+pdfjs.GlobalWorkerOptions.workerSrc = `//unpkg.com/pdfjs-dist@${pdfjs.version}/build/pdf.worker.min.mjs`;
 
 // API Base URL
-const API_BASE = 'http://localhost:5000';
+const API_BASE = API_BASE_URL;
 
 /**
  * SecureViewer Component
@@ -413,18 +414,18 @@ const SecureViewer = () => {
 
                     <form onSubmit={handleJumpToPage} className="flex items-center gap-2">
                         <span className="text-gray-400 text-sm font-medium">Page</span>
-                        <input 
+                        <input
                             name="pageJump"
-                            type="number" 
-                            min="1" 
+                            type="number"
+                            min="1"
                             max={numPages}
                             defaultValue={pageNumber}
                             key={pageNumber}
                             className="w-16 bg-gray-800 border border-gray-600 rounded px-2 py-1 text-center text-white focus:border-blue-500 outline-none text-sm"
                         />
                         <span className="text-gray-400 text-sm font-medium">of {numPages}</span>
-                        <button 
-                            type="submit" 
+                        <button
+                            type="submit"
                             className="px-2 py-1 !bg-blue-600 !border-blue-500 hover:!bg-blue-700 text-white rounded text-sm font-medium ml-2"
                         >
                             Go
