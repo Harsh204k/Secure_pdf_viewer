@@ -1,43 +1,57 @@
-const express = require("express");
-const cors = require("cors");
-const helmet = require("helmet");
+const express = require('express');
+const cors = require('cors'); // Restart trigger
+const helmet = require('helmet');
+const dotenv = require('dotenv');
+
+dotenv.config();
 
 const app = express();
 
-const allowedOrigins = new Set([
-    "https://secure-pdf-viewer-frontend.vercel.app",
-    "https://pdf-secure-r528-frontend-last.vercel.app",
-    "http://localhost:5173"
-]);
-
-const corsOptions = {
-    origin: (origin, cb) => {
-        // allow requests like curl/postman (no origin)
-        if (!origin) return cb(null, true);
-        return cb(null, allowedOrigins.has(origin));
-    },
-    credentials: true,
-    methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
-    allowedHeaders: ["Content-Type", "Authorization"],
-};
-
-app.use(cors(corsOptions));
-app.options("*", cors(corsOptions)); // IMPORTANT for preflight
-
-app.use(helmet({ crossOriginResourcePolicy: false }));
+// Middleware
+app.use(cors({
+    origin: ["https://pdf-secure-r528-frontend-last.vercel.app", "http://localhost:5173"],
+    methods: ["GET", "POST", "PUT", "DELETE"],
+    credentials: true
+}));
+app.use(
+    helmet({
+        crossOriginResourcePolicy: false,
+    })
+);
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-app.use("/api/auth", require("./routes/authRoutes"));
-app.use("/api/pdfs", require("./routes/pdfRoutes"));
-app.use("/api/groups", require("./routes/groupRoutes"));
-app.use("/api/security", require("./routes/securityRoutes"));
+// Routes
+const authRoutes = require('./routes/authRoutes');
 
-app.get("/api", (req, res) => res.send("API running"));
+const pdfRoutes = require('./routes/pdfRoutes');
+const groupRoutes = require('./routes/groupRoutes');
+const securityRoutes = require('./routes/securityRoutes');
 
-app.use((err, req, res, next) => {
-    console.error(err);
-    res.status(500).json({ message: "Internal Server Error" });
+app.use('/api/auth', authRoutes);
+app.use('/api/pdfs', pdfRoutes);
+app.use('/api/groups', groupRoutes);
+app.use('/api/security', securityRoutes);
+
+app.get('/', (req, res) => {
+    res.send('Secure PDF Viewer API is running');
 });
 
-module.exports = app;
+// Error handling middleware
+app.use((err, req, res, next) => {
+    console.error(err.stack);
+    const status = err.statusCode || 500;
+    const message = err.message || 'Internal Server Error';
+
+    // Structured JSON error response
+    res.status(status).json({
+        message,
+        error: process.env.NODE_ENV === 'development' ? err.stack : undefined
+    });
+});
+
+const PORT = process.env.PORT || 5000;
+
+app.listen(PORT, () => {
+    console.log(`Server running on port ${PORT}`);
+});
