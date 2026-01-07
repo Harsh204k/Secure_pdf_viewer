@@ -9,10 +9,17 @@ const app = express();
 
 // Middleware
 app.use(cors({
-    origin: ["https://pdf-secure-r528-frontend-last.vercel.app", "http://localhost:5173"],
-    methods: ["GET", "POST", "PUT", "DELETE"],
+    origin: [
+        "https://secure-pdf-viewer-frontend.vercel.app",
+        "https://pdf-secure-r528-frontend-last.vercel.app",
+        "http://localhost:5173"
+    ],
+    methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+    allowedHeaders: ["Content-Type", "Authorization"],
     credentials: true
 }));
+app.options("*", cors());
+
 app.use(
     helmet({
         crossOriginResourcePolicy: false,
